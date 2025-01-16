@@ -1,0 +1,6 @@
+.DS_Store
+*.xcconfig
+xcuserdata/
+*.ipa
+*.dSYM.zip
+*.dSYM
