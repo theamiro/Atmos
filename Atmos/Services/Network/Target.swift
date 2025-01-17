@@ -8,14 +8,14 @@
 import Foundation
 
 struct Target: AnyTarget {
-    var baseURL: String { "" }
+    var baseURL: String { "https://api.openweathermap.org" }
     var path: String
     var method: HTTPMethod
     var sampleData: Data
     var authorizationType: AuthorizationType
     var headers: [String: Any]?
     var parameters: Encodable?
-    
+
     init(path: String,
          method: HTTPMethod = .get,
          sampleData: Data = Data(),
