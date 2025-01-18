@@ -33,7 +33,7 @@ class RequestHandler: RequestHandlerDelegate {
         var request = URLRequest(url: url.appendingPathComponent(target.path))
         request.httpMethod = target.method.rawValue
 
-        print(String(describing: request.url?.absoluteString))
+        print(request.curlString())
 
         switch target.authorizationType {
         case .bearer:
