@@ -10,7 +10,8 @@ import XCTest
 import Foundation
 
 final class ForecastViewModelTests: XCTestCase {
-    var sut: ForecastViewModel!
+    private var sut: ForecastViewModel!
+    private let location = Location(longitude: 36.817223, latitude: -1.286389)
 
     override func setUp() {
         super.setUp()
@@ -30,9 +31,14 @@ final class ForecastViewModelTests: XCTestCase {
 
     }
 
+    func testGetFavorites() {
+        sut = configureTests(with: [location])
+        sut.getFavorites()
+        XCTAssertEqual(sut.favorites.count, 1)
+    }
+
     func testAddFavorite() {
         XCTAssertTrue(sut.favorites.isEmpty)
-        let location = Location(longitude: 36.817223, latitude: -1.286389)
         sut.addFavorite(location: location)
         guard let firstLocation = sut.favorites.first as? Location else {
             XCTFail("Favorites should not be empty")
@@ -42,7 +48,6 @@ final class ForecastViewModelTests: XCTestCase {
     }
 
     func testRemoveFavorite() {
-        let location = Location(longitude: 36.817223, latitude: -1.286389)
         sut = configureTests(with: [location])
 
         sut.removeFavorite(location)
@@ -52,7 +57,7 @@ final class ForecastViewModelTests: XCTestCase {
     private func configureTests(with favorites: [Location] = []) -> ForecastViewModel {
         let networkClient = NetworkClient(stubBehavior: .immediately)
         let weatherService = WeatherService(networkClient: networkClient)
-        let favoriteService = MockFavoriteService()
+        let favoriteService = MockFavoriteService(with: favorites)
 
         return ForecastViewModel(weatherService: weatherService, favoriteService: favoriteService)
     }
