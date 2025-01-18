@@ -24,11 +24,33 @@ final class ForecastViewModelTests: XCTestCase {
     }
 
     func testGetCurrentWeather() {
+        let expectation = expectation(description: "Await fetching of current weather")
+        sut.fetchCurrentWeather()
 
+        let result = XCTWaiter.wait(for: [expectation], timeout: 0.1)
+
+        if result == XCTWaiter.Result.timedOut {
+            guard let currentWeather = sut.currentWeather else {
+                XCTFail("Current Weather cannot be nil")
+                return
+            }
+            XCTAssertEqual(currentWeather.main.minimumTemperature, 283.06)
+            XCTAssertEqual(currentWeather.main.maximumTemperature, 286.82)
+        } else {
+            XCTFail("Waiter interrupted")
+        }
     }
 
     func testGet5DayForecast() {
+        let expectation = expectation(description: "Await fetching of forecast")
+        sut.get5DayForecast()
 
+        let result = XCTWaiter.wait(for: [expectation], timeout: 0.1)
+        if result == XCTWaiter.Result.timedOut {
+            XCTAssertEqual(sut.forecast.count, 4)
+        } else {
+            XCTFail("Waiter interrupted")
+        }
     }
 
     func testGetFavorites() {

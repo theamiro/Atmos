@@ -19,7 +19,7 @@ protocol FavoriteServiceDelegate: AnyObject {
 final class CoreDataFavoriteService: FavoriteServiceDelegate {
     private let context: NSManagedObjectContext
 
-    init(context: NSManagedObjectContext) {
+    init(context: NSManagedObjectContext = PersistenceController.shared.container.viewContext) {
         self.context = context
     }
 

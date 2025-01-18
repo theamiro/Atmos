@@ -22,7 +22,10 @@ final class WeatherService: WeatherServiceDelegate {
     }
 
     func getCurrentWeather() -> AnyPublisher<Forecast, Error> {
-        let target = Target(path: "/data/2.5/weather")
+        let target = Target(
+            path: "/data/2.5/weather",
+            sampleData: generateMockResponse("current")
+        )
         return networkClient.request(target)
             .map { (response: Forecast) in
                 response
@@ -31,7 +34,10 @@ final class WeatherService: WeatherServiceDelegate {
     }
 
     func get5DayForecast() -> AnyPublisher<ForecastResponse, Error> {
-        let target = Target(path: "/data/2.5/forecast")
+        let target = Target(
+            path: "/data/2.5/forecast",
+            sampleData: generateMockResponse("forecast")
+        )
         return networkClient.request(target)
             .map { (response: ForecastResponse) in
                 response

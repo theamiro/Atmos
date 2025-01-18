@@ -41,17 +41,6 @@
                ReferencedContainer = "container:Atmos.xcodeproj">
             </BuildableReference>
          </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "84278A282D396BF30021FFF4"
-               BuildableName = "AtmosUITests.xctest"
-               BlueprintName = "AtmosUITests"
-               ReferencedContainer = "container:Atmos.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
