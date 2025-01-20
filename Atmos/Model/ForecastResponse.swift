@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import DeveloperToolsSupport
 
 struct ForecastResponse: Decodable {
     var forecast: [Forecast]
@@ -43,4 +44,20 @@ struct WeatherType: Decodable {
     let id: Int
     let main: String
     let description: String
+
+    var weatherIllustration: WeatherIllustration {
+        switch main {
+        case "Rainy":
+            WeatherIllustration(icon: .rain, background: .seaRainy)
+        case "Sunny":
+            WeatherIllustration(icon: .partlySunny, background: .seaSunny)
+        default:
+            WeatherIllustration(icon: .clear, background: .seaCloudy)
+        }
+    }
+}
+
+struct WeatherIllustration {
+    var icon: ImageResource
+    var background: ImageResource
 }

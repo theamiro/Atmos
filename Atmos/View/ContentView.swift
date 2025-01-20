@@ -9,34 +9,46 @@ import SwiftUI
 import CoreData
 
 struct ContentView: View {
-    @StateObject private var forecastViewModel = ForecastViewModel(weatherService: WeatherService(),
+    @StateObject private var forecastViewModel = ForecastViewModel(weatherService: WeatherService(networkClient: NetworkClient(stubBehavior: .never)),
                                                                    favoriteService: CoreDataFavoriteService())
     var body: some View {
         ScrollView {
-            VStack {
-                Text(String(format: "%.0fº", forecastViewModel.currentWeather?.main.temperature ?? 0.0))
-                    .font(.system(size: 40))
-                    .fontWeight(.bold)
-                Text("Cloudy".uppercased())
-                    .font(.headline)
-                    .fontWeight(.bold)
+            VStack(spacing: 0) {
+                ZStack {
+                    Image(forecastViewModel.currentWeather?.weather.first?.weatherIllustration.background ?? .seaCloudy)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                    VStack {
+                        Text(String(format: "%.0fº", forecastViewModel.currentWeather?.main.temperature ?? 0.0))
+                            .font(.system(size: 64))
+                        Text(forecastViewModel.currentWeather?.weather.first?.main.uppercased() ?? "Unknown")
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                    }
+                    .foregroundStyle(.white)
+                }
+                HorizontalGrid(forecastViewModel.currentWeather?.main)
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 12)
+                    .background(Color.cloudy)
+                    .foregroundStyle(Color.white)
+                Divider()
+                    .frame(height: 1.6)
+                    .background(Color.white)
             }
-            HStack {
-                VerticalTempView(title: "min", temperature: String(format: "%.0fº", forecastViewModel.currentWeather?.main.minimumTemperature ?? 0.0))
-                Spacer()
-                VerticalTempView(title: "current", temperature: String(format: "%.0fº", forecastViewModel.currentWeather?.main.temperature ?? 0.0))
-                Spacer()
-                VerticalTempView(title: "max", temperature: String(format: "%.0fº", forecastViewModel.currentWeather?.main.maximumTemperature ?? 0.0))
-            }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 20)
-            Divider()
             VStack(spacing: 0) {
                 ForEach(forecastViewModel.forecast, id: \.date) { forecast in
                     DayWeatherView(forecast)
+                        .padding(.horizontal)
+                        .padding(.vertical, 8)
                 }
             }
+            .background(Color.cloudy)
+            .foregroundStyle(Color.white)
         }
+        .background(Color.cloudy)
+        .scrollBounceBehavior(.basedOnSize)
+        .ignoresSafeArea()
         .task {
             forecastViewModel.fetchCurrentWeather()
             forecastViewModel.get5DayForecast()
@@ -46,17 +58,4 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-}
-
-struct VerticalTempView: View {
-    var title: String
-    var temperature: String
-    var body: some View {
-        VStack {
-            Text(temperature)
-                .font(.title2)
-                .fontWeight(.semibold)
-            Text(title)
-        }
-    }
 }
