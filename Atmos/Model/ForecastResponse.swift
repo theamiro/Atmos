@@ -7,6 +7,7 @@
 
 import Foundation
 import DeveloperToolsSupport
+import SwiftUI
 
 struct ForecastResponse: Decodable {
     var forecast: [Forecast]
@@ -42,22 +43,56 @@ struct Weather: Decodable {
 
 struct WeatherType: Decodable {
     let id: Int
-    let main: String
+    let main: WeatherPhenomena
     let description: String
-
-    var weatherIllustration: WeatherIllustration {
-        switch main {
-        case "Rainy":
-            WeatherIllustration(icon: .rain, background: .seaRainy)
-        case "Sunny":
-            WeatherIllustration(icon: .partlySunny, background: .seaSunny)
-        default:
-            WeatherIllustration(icon: .clear, background: .seaCloudy)
-        }
-    }
 }
 
-struct WeatherIllustration {
-    var icon: ImageResource
-    var background: ImageResource
+enum WeatherPhenomena: String, Decodable {
+    case rainy = "Rain"
+    case cloudy = "Clouds"
+    case sunny = "Sun"
+    case clear = "Clear"
+
+    var title: String {
+        switch self {
+        case .rainy:
+            return "Rainy"
+        case .cloudy:
+            return "Cloudy"
+        case .sunny:
+            return "Sunny"
+        case .clear:
+            return "Clear"
+        }
+    }
+
+    var icon: ImageResource {
+        switch self {
+        case .rainy:
+            return .rain
+        case .sunny:
+            return .partlySunny
+        case .clear, .cloudy:
+            return .clear
+        }
+    }
+
+    var background: ImageResource {
+        switch self {
+        case .rainy:
+            return .seaRainy
+        case .cloudy:
+            return .seaCloudy
+        case .sunny, .clear:
+            return .seaSunny
+        }
+    }
+
+    var backgroundColor: Color {
+        switch self {
+        case .rainy: return Color.rainy
+        case .cloudy: return Color.cloudy
+        case .sunny, .clear: return Color.sunnyAlt
+        }
+    }
 }

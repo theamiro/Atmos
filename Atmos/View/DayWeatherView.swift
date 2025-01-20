@@ -17,7 +17,7 @@ struct DayWeatherView: View {
             Text(Date(timeIntervalSince1970: forecast.date).formatted(.dateTime.weekday(.wide)))
                 .font(.headline)
                 .frame(maxWidth: .infinity, alignment: .leading)
-            Image(forecast.weather.first?.weatherIllustration.icon ?? .clear)
+            Image(forecast.weather.first?.main.icon ?? .clear)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 32)
@@ -27,6 +27,10 @@ struct DayWeatherView: View {
                 .monospacedDigit()
                 .frame(maxWidth: .infinity, alignment: .trailing)
         })
+        .foregroundStyle(Color.white)
+        .padding(.horizontal)
+        .padding(.vertical, 8)
+        .background(forecast.weather.first?.main.backgroundColor)
     }
 }
 
@@ -35,8 +39,15 @@ struct DayWeatherView: View {
                             main: Weather(temperature: 20.0,
                                           minimumTemperature: 16.0,
                                           maximumTemperature: 34.0),
-                            weather: [WeatherType(id: 1, main: "Rainy", description: "Light showers")]))
-                .padding(.horizontal)
-                .padding(.vertical, 8)
-                .background(Color.cloudy)
+                            weather: [WeatherType(id: 1, main: .rainy, description: "Light showers")]))
+    DayWeatherView(Forecast(date: 1234567890,
+                            main: Weather(temperature: 20.0,
+                                          minimumTemperature: 16.0,
+                                          maximumTemperature: 34.0),
+                            weather: [WeatherType(id: 1, main: .sunny, description: "Sunny")]))
+    DayWeatherView(Forecast(date: 1234567890,
+                            main: Weather(temperature: 37.5,
+                                          minimumTemperature: 16.0,
+                                          maximumTemperature: 34.0),
+                            weather: [WeatherType(id: 1, main: .cloudy, description: "Cloudy")]))
 }

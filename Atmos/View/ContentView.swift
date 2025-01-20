@@ -15,13 +15,13 @@ struct ContentView: View {
         ScrollView {
             VStack(spacing: 0) {
                 ZStack {
-                    Image(forecastViewModel.currentWeather?.weather.first?.weatherIllustration.background ?? .seaCloudy)
+                    Image(forecastViewModel.currentWeather?.weather.first?.main.background ?? .seaCloudy)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                     VStack {
                         Text(String(format: "%.0fº", forecastViewModel.currentWeather?.main.temperature ?? 0.0))
                             .font(.system(size: 64))
-                        Text(forecastViewModel.currentWeather?.weather.first?.main.uppercased() ?? "Unknown")
+                        Text(forecastViewModel.currentWeather?.weather.first?.main.title.uppercased() ?? "Unknown")
                             .font(.title2)
                             .fontWeight(.semibold)
                     }
@@ -30,7 +30,8 @@ struct ContentView: View {
                 HorizontalGrid(forecastViewModel.currentWeather?.main)
                     .padding(.horizontal, 20)
                     .padding(.vertical, 12)
-                    .background(Color.cloudy)
+                    .background(forecastViewModel.currentWeather?.weather.first?.main.backgroundColor ??
+                                Color.cloudy)
                     .foregroundStyle(Color.white)
                 Divider()
                     .frame(height: 1.6)
@@ -39,14 +40,14 @@ struct ContentView: View {
             VStack(spacing: 0) {
                 ForEach(forecastViewModel.forecast, id: \.date) { forecast in
                     DayWeatherView(forecast)
-                        .padding(.horizontal)
-                        .padding(.vertical, 8)
                 }
             }
-            .background(Color.cloudy)
+            .background(forecastViewModel.currentWeather?.weather.first?.main.backgroundColor ??
+                        Color.cloudy)
             .foregroundStyle(Color.white)
         }
-        .background(Color.cloudy)
+        .background(forecastViewModel.currentWeather?.weather.first?.main.backgroundColor ??
+                    Color.cloudy)
         .scrollBounceBehavior(.basedOnSize)
         .ignoresSafeArea()
         .task {

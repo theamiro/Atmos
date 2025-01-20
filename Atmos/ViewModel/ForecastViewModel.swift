@@ -93,17 +93,17 @@ final class ForecastViewModel: ObservableObject {
     }
 
     private func filterForecastByDay(_ forecast: [Forecast]) -> [Forecast] {
+        // Rewrite
         var days = Set<String>()
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
-
         return forecast.filter { forecast in
             let date = Date(timeIntervalSince1970: forecast.date)
-            let dayString = dateFormatter.string(from: date)
-            if days.contains(dayString) {
+            let day = dateFormatter.string(from: date)
+            if days.contains(day) {
                 return false
             } else {
-                days.insert(dayString)
+                days.insert(day)
                 return true
             }
         }
