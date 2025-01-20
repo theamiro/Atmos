@@ -22,10 +22,17 @@ final class WeatherService: WeatherServiceDelegate {
     }
 
     func getCurrentWeather() -> AnyPublisher<Forecast, Error> {
+        let parameters: [String: Any] = [
+            "lat": -1.286389,
+            "lon": 36.817223,
+            "units": "metric"
+        ]
         let target = Target(
             path: "/data/2.5/weather",
-            sampleData: generateMockResponse("current")
+            sampleData: generateMockResponse("current"),
+            task: .queryParameters(parameters)
         )
+
         return networkClient.request(target)
             .map { (response: Forecast) in
                 response
@@ -34,10 +41,17 @@ final class WeatherService: WeatherServiceDelegate {
     }
 
     func get5DayForecast() -> AnyPublisher<ForecastResponse, Error> {
+        let parameters: [String: Any] = [
+            "lat": -1.286389,
+            "lon": 36.817223,
+            "units": "metric"
+        ]
         let target = Target(
             path: "/data/2.5/forecast",
-            sampleData: generateMockResponse("forecast")
+            sampleData: generateMockResponse("forecast"),
+            task: .queryParameters(parameters)
         )
+
         return networkClient.request(target)
             .map { (response: ForecastResponse) in
                 response
