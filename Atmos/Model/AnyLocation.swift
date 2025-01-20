@@ -7,10 +7,11 @@
 
 import Foundation
 
-protocol AnyLocation: Equatable {
+protocol AnyLocation: Identifiable, Equatable, Hashable {
     var id: UUID { get }
     var longitude: Double { get set }
     var latitude: Double { get set }
+
     static func == (lhs: Self, rhs: Self) -> Bool
 }
 
@@ -23,6 +24,7 @@ extension AnyLocation {
 }
 
 struct Location: AnyLocation {
+    var id: UUID = UUID()
     var longitude: Double
     var latitude: Double
 }

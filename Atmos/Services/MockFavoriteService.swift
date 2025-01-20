@@ -5,9 +5,6 @@
 //  Created by Michael Amiro on 18/01/2025.
 //
 
-import XCTest
-@testable import Atmos
-import CoreLocation
 import Combine
 
 final class MockFavoriteService: FavoriteServiceDelegate {
@@ -22,7 +19,7 @@ final class MockFavoriteService: FavoriteServiceDelegate {
     }
 
     func addFavorite(location: any AnyLocation) -> Just<Bool> {
-        guard storage.first(where: { $0.id == location.id }) == nil else {
+        guard storage.first(where: { $0.latitude == location.latitude && $0.longitude == location.longitude }) == nil else {
             return Just(false)
         }
         storage.append(Location(longitude: location.longitude, latitude: location.latitude))
@@ -33,7 +30,7 @@ final class MockFavoriteService: FavoriteServiceDelegate {
         guard storage.count > 0 else {
             return Just(false)
         }
-        guard let favorite = storage.first(where: { $0.id == location.id }) else {
+        guard let favorite = storage.first(where: { $0.latitude == location.latitude && $0.longitude == location.longitude }) else {
             return Just(false)
         }
         storage.removeAll(where: { $0.id == favorite.id })
