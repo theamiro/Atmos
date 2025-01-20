@@ -47,7 +47,7 @@ final class ForecastViewModelTests: XCTestCase {
 
         let result = XCTWaiter.wait(for: [expectation], timeout: 0.1)
         if result == XCTWaiter.Result.timedOut {
-            XCTAssertEqual(sut.forecast.count, 4)
+            XCTAssertEqual(sut.forecast.count, 7)
         } else {
             XCTFail("Waiter interrupted")
         }

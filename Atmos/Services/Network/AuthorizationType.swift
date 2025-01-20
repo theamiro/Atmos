@@ -9,5 +9,6 @@ import Foundation
 
 enum AuthorizationType {
     case bearer
+    case queryParameter(key: String)
     case none
 }

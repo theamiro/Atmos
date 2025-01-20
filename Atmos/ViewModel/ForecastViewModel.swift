@@ -47,7 +47,8 @@ final class ForecastViewModel: ObservableObject {
                     print(error.localizedDescription)
                 }
             } receiveValue: { [weak self] response in
-                self?.forecast = response.forecast
+                guard let self else { return }
+                self.forecast = self.filterForecastByDay(response.forecast)
             }
             .store(in: &cancellable)
     }
@@ -89,5 +90,22 @@ final class ForecastViewModel: ObservableObject {
                 }
             }
             .store(in: &cancellable)
+    }
+
+    private func filterForecastByDay(_ forecast: [Forecast]) -> [Forecast] {
+        // Rewrite
+        var days = Set<String>()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        return forecast.filter { forecast in
+            let date = Date(timeIntervalSince1970: forecast.date)
+            let day = dateFormatter.string(from: date)
+            if days.contains(day) {
+                return false
+            } else {
+                days.insert(day)
+                return true
+            }
+        }
     }
 }

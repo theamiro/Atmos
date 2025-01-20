@@ -16,10 +16,6 @@ class RequestHandler: RequestHandlerDelegate {
     private var session: URLSession
     private var stubBehavior: StubBehavior
 
-    var token: String = {
-        return Bundle.main.infoDictionary?["API_KEY"] as? String ?? ""
-    }()
-
     init(session: URLSession = .shared, stubBehavior: StubBehavior = .never) {
         self.session = session
         self.stubBehavior = stubBehavior
@@ -32,14 +28,10 @@ class RequestHandler: RequestHandlerDelegate {
 
         var request = URLRequest(url: url.appendingPathComponent(target.path))
         request.httpMethod = target.method.rawValue
+        request.configureParameters(using: target)
+        request.configureAuthorization(using: target)
 
         print(request.curlString())
-
-        switch target.authorizationType {
-        case .bearer:
-            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        default: break
-        }
 
         guard stubBehavior == .never else {
             return Just(target.sampleData)

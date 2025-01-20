@@ -14,19 +14,19 @@ struct Target: AnyTarget {
     var sampleData: Data
     var authorizationType: AuthorizationType
     var headers: [String: Any]?
-    var parameters: Encodable?
+    var task: NetworkTask
 
     init(path: String,
          method: HTTPMethod = .get,
          sampleData: Data = Data(),
-         authorizationType: AuthorizationType = .none,
+         authorizationType: AuthorizationType = .queryParameter(key: "appid"),
          headers: [String: Any]? = nil,
-         parameters: Encodable? = nil) {
+         task: NetworkTask = .plainRequest) {
         self.path = path
         self.method = method
         self.sampleData = sampleData
         self.authorizationType = authorizationType
         self.headers = headers
-        self.parameters = parameters
+        self.task = task
     }
 }
