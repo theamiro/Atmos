@@ -8,28 +8,40 @@
 import SwiftUI
 
 struct FavoritesView: View {
-    @StateObject private var favoritesViewModel = FavoritesViewModel(favoriteService: MockFavoriteService())
+    @StateObject private var favoritesViewModel = FavoritesViewModel()
     var body: some View {
         NavigationStack {
             List(favoritesViewModel.favorites, id: \.hashValue) { location in
-                VStack(alignment: .leading) {
-                    Text("Amsterdam")
-                        .font(.title3)
-                        .fontWeight(.semibold)
-                    Group {
-                        Text("Latitude: \(location.latitude)")
-                        Text("Longitude: \(location.longitude)")
+                NavigationLink(destination: {
+                    Text("Sample")
+                        .navigationTitle("Amsterdam")
+                }, label: {
+                    VStack(alignment: .leading) {
+                        Text("Amsterdam")
+                            .font(.title3)
+                            .fontWeight(.semibold)
+                        HStack {
+                            Text("Latitude: \(location.latitude)")
+                            Text("Longitude: \(location.longitude)")
+                        }
+                        .font(.caption)
                     }
-                    .font(.subheadline)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                })
+                .swipeActions(allowsFullSwipe: true) {
+                    Button(role: .destructive) {
+                        favoritesViewModel.deleteFavorite(location)
+                    } label: {
+                        Label("Delete", systemImage: "trash.fill")
+                    }
                 }
-                .padding(.horizontal)
-                .frame(maxWidth: .infinity, alignment: .leading)
             }
             .navigationTitle("Favorites")
         }
         .task {
             favoritesViewModel.getFavorites()
         }
+        .searchable(text: $favoritesViewModel.searchTerm)
     }
 }
 

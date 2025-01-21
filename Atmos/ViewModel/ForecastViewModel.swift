@@ -82,9 +82,10 @@ final class ForecastViewModel: ObservableObject {
 
     func removeFavorite(_ location: Location) {
         favoriteService.removeFavorite(location)
-            .sink { success in
+            .sink { [weak self] success in
                 if success {
                     // notify success
+                    self?.getFavorites()
                 } else {
                     // notify error
                 }
