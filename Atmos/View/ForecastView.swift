@@ -10,8 +10,8 @@ import CoreData
 
 struct ForecastView: View {
     @StateObject private var forecastViewModel = ForecastViewModel(weatherService: WeatherService(networkClient: NetworkClient(stubBehavior: .never)),
-                                                                   favoriteService: CoreDataFavoriteService())
-    @State private var location = Location(longitude: -2.39112, latitude: 2.003)
+                                                                   favoriteService: CoreDataFavoriteService(), locationService: LocationService())
+    @State private var location = Location(longitude: 36.817223, latitude: -1.286389)
     var body: some View {
         NavigationStack {
             ScrollView {

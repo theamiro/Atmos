@@ -43,6 +43,7 @@ final class CoreDataFavoriteService: FavoriteServiceDelegate {
             }
             let favorite = FavoriteLocation(context: context)
             favorite.id = UUID()
+            favorite.name = location.name
             favorite.latitude = location.latitude
             favorite.longitude = location.longitude
             return Just(save())

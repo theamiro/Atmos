@@ -17,7 +17,7 @@ class ResponseHandler: ResponseHandlerDelegate {
         do {
             let decoder = JSONDecoder()
             let response = try decoder.decode(T.self, from: data)
-            // print(String(describing: response))
+            print(String(describing: response))
             return Just(response)
                 .setFailureType(to: Error.self)
                 .eraseToAnyPublisher()

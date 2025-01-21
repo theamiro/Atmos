@@ -16,12 +16,14 @@ final class ForecastViewModel: ObservableObject {
 
     private var cancellable = Set<AnyCancellable>()
 
-    private var weatherService: WeatherServiceDelegate
-    private var favoriteService: FavoriteServiceDelegate
+    private let weatherService: WeatherServiceDelegate
+    private let favoriteService: FavoriteServiceDelegate
+    private let locationService: LocationServiceDelegate
 
-    init(weatherService: WeatherServiceDelegate, favoriteService: FavoriteServiceDelegate) {
+    init(weatherService: WeatherServiceDelegate, favoriteService: FavoriteServiceDelegate, locationService: LocationServiceDelegate) {
         self.weatherService = weatherService
         self.favoriteService = favoriteService
+        self.locationService = locationService
     }
 
     func fetchCurrentWeather() {
@@ -68,14 +70,23 @@ final class ForecastViewModel: ObservableObject {
     }
 
     func addFavorite(location: Location) {
-        favoriteService.addFavorite(location: location)
-            .sink { [weak self] success in
-                if success {
-                    // notify success
-                    self?.getFavorites()
-                } else {
-                    // notify error
-                }
+        locationService.getGeoCodePlaceName(location: location)
+            .sink { completed in
+                print(completed)
+            } receiveValue: { [weak self] address in
+                guard let self else { return }
+                var updatedLocation = location
+                updatedLocation.name = address.first?.addressComponents.first?.longName ?? "Unknown"
+                favoriteService.addFavorite(location: updatedLocation)
+                    .sink { [weak self] success in
+                        if success {
+                            // notify success
+                            self?.getFavorites()
+                        } else {
+                            // notify error
+                        }
+                    }
+                    .store(in: &cancellable)
             }
             .store(in: &cancellable)
     }

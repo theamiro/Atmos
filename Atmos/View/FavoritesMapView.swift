@@ -21,7 +21,7 @@ struct FavoritesMapView: View {
                 ForEach(locations, id: \.hashValue) { location in
                     Marker(coordinate: location.coordinate2D) {
                         Label {
-                            Text(location.name)
+                            Text(location.name ?? "Unknown")
                         } icon: {
                             Image(systemName: "cloud.fill")
                         }

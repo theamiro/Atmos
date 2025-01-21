@@ -10,7 +10,7 @@ import CoreLocation
 
 protocol AnyLocation: Identifiable, Equatable, Hashable {
     var id: UUID { get }
-    var name: String { get }
+    var name: String? { get set }
     var longitude: Double { get set }
     var latitude: Double { get set }
 
@@ -21,10 +21,6 @@ protocol AnyLocation: Identifiable, Equatable, Hashable {
 
 extension AnyLocation {
     var id: UUID { UUID() }
-
-    var name: String {
-        "Nairobi"
-    }
 
     var coordinate2D: CLLocationCoordinate2D {
         return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
@@ -37,6 +33,7 @@ extension AnyLocation {
 
 struct Location: AnyLocation {
     var id: UUID = UUID()
+    var name: String?
     var longitude: Double
     var latitude: Double
 }

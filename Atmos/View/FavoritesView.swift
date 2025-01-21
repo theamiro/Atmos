@@ -14,10 +14,10 @@ struct FavoritesView: View {
             List(favoritesViewModel.favorites, id: \.hashValue) { location in
                 NavigationLink(destination: {
                     Text("Sample")
-                        .navigationTitle("Amsterdam")
+                        .navigationTitle(location.name ?? "Unknown")
                 }, label: {
                     VStack(alignment: .leading) {
-                        Text("Amsterdam")
+                        Text(location.name ?? "Unknown")
                             .font(.title3)
                             .fontWeight(.semibold)
                         HStack {
