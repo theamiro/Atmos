@@ -25,7 +25,7 @@ struct ForecastView: View {
                         VStack {
                             Text(String(format: "%.0fº", forecastViewModel.currentWeather?.main.temperature ?? 0.0))
                                 .font(.system(size: 64))
-                            Text(forecastViewModel.currentWeather?.weather.first?.main.title.uppercased() ?? "Unknown")
+                            Text(forecastViewModel.currentWeather?.weather.first?.main.title ?? "Unknown")
                                 .font(.title2)
                                 .fontWeight(.semibold)
                         }

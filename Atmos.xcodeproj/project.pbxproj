@@ -157,6 +157,8 @@
 			knownRegions = (
 				en,
 				Base,
+				fr,
+				af,
 			);
 			mainGroup = 84278A012D396BF20021FFF4;
 			minimizedProjectReferenceProxies = 1;
@@ -297,6 +299,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;

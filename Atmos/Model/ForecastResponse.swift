@@ -53,7 +53,7 @@ enum WeatherPhenomena: String, Decodable {
     case sunny = "Sun"
     case clear = "Clear"
 
-    var title: String {
+    var title: LocalizedStringKey {
         switch self {
         case .rainy:
             return "Rainy"
