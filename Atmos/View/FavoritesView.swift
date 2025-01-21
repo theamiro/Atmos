@@ -37,6 +37,16 @@ struct FavoritesView: View {
                 }
             }
             .navigationTitle("Favorites")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink {
+                        FavoritesMapView(favoritesViewModel.favorites)
+                    } label: {
+                        Image(systemName: "map.fill")
+                    }
+
+                }
+            }
         }
         .task {
             favoritesViewModel.getFavorites()

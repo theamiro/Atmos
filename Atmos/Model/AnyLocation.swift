@@ -6,17 +6,29 @@
 //
 
 import Foundation
+import CoreLocation
 
 protocol AnyLocation: Identifiable, Equatable, Hashable {
     var id: UUID { get }
+    var name: String { get }
     var longitude: Double { get set }
     var latitude: Double { get set }
+
+    var coordinate2D: CLLocationCoordinate2D { get }
 
     static func == (lhs: Self, rhs: Self) -> Bool
 }
 
 extension AnyLocation {
     var id: UUID { UUID() }
+
+    var name: String {
+        "Nairobi"
+    }
+
+    var coordinate2D: CLLocationCoordinate2D {
+        return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
 
     static func == (lhs: Self, rhs: Self) -> Bool {
         return lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
