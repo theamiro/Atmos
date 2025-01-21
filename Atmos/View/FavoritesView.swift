@@ -11,47 +11,40 @@ struct FavoritesView: View {
     @StateObject private var favoritesViewModel = FavoritesViewModel()
     var body: some View {
         NavigationStack {
-            List(favoritesViewModel.favorites, id: \.hashValue) { location in
-                NavigationLink(destination: {
-                    Text("Sample")
-                        .navigationTitle(location.name ?? "Unknown")
-                }, label: {
-                    VStack(alignment: .leading) {
-                        Text(location.name ?? "Unknown")
-                            .font(.title3)
-                            .fontWeight(.semibold)
-                        HStack {
-                            Text("Latitude: \(location.latitude)")
-                            Text("Longitude: \(location.longitude)")
+            if favoritesViewModel.searchTerm.isEmpty {
+                List(favoritesViewModel.favorites, id: \.hashValue) { location in
+                    FavoriteView(location)
+                        .swipeActions(allowsFullSwipe: true) {
+                            Button(role: .destructive) {
+                                favoritesViewModel.deleteFavorite(location)
+                            } label: {
+                                Label("Delete", systemImage: "trash.fill")
+                            }
                         }
-                        .font(.caption)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                })
-                .swipeActions(allowsFullSwipe: true) {
-                    Button(role: .destructive) {
-                        favoritesViewModel.deleteFavorite(location)
-                    } label: {
-                        Label("Delete", systemImage: "trash.fill")
-                    }
                 }
-            }
-            .navigationTitle("Favorites")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    NavigationLink {
-                        FavoritesMapView(favoritesViewModel.favorites)
-                    } label: {
-                        Image(systemName: "map.fill")
-                    }
-
+                .navigationTitle("Favorites")
+            } else {
+                List(favoritesViewModel.searchResults, id: \.id) { result in
+                    let location = Location(name: result.name,
+                                            longitude: result.geometry.location.longitude,
+                                            latitude: result.geometry.location.latitude)
+                    FavoriteView(location)
+                        .onTapGesture {
+                            favoritesViewModel.addFavorite(location)
+                        }
                 }
             }
         }
-        .task {
-            favoritesViewModel.getFavorites()
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                NavigationLink {
+                    FavoritesMapView(favoritesViewModel.favorites)
+                } label: {
+                    Image(systemName: "map.fill")
+                }
+            }
         }
-        .searchable(text: $favoritesViewModel.searchTerm)
+        .searchable(text: $favoritesViewModel.searchTerm, prompt: Text("Search a new place"))
     }
 }
 

@@ -13,7 +13,7 @@ struct AtmosApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ForecastView()
+            FavoritesView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }

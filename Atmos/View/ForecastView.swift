@@ -9,9 +9,11 @@ import SwiftUI
 import CoreData
 
 struct ForecastView: View {
-    @StateObject private var forecastViewModel = ForecastViewModel(weatherService: WeatherService(networkClient: NetworkClient(stubBehavior: .never)),
-                                                                   favoriteService: CoreDataFavoriteService(), locationService: LocationService())
-    @State private var location = Location(longitude: 36.817223, latitude: -1.286389)
+    @StateObject private var forecastViewModel = ForecastViewModel(
+        weatherService: WeatherService(),
+        favoriteService: CoreDataFavoriteService(),
+        locationService: LocationService(),
+        placesService: GooglePlacesService())
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -55,13 +57,9 @@ struct ForecastView: View {
             .toolbar {
                 ToolbarItem(placement: .bottomBar) {
                     Button {
-                        if forecastViewModel.favorites.contains(where: { $0.latitude == location.latitude && $0.longitude == location.longitude }) {
-                            forecastViewModel.removeFavorite(location)
-                        } else {
-                            forecastViewModel.addFavorite(location: location)
-                        }
+                        forecastViewModel.addFavorite()
                     } label: {
-                        Image(systemName: forecastViewModel.favorites.contains(where: { $0.latitude == location.latitude && $0.longitude == location.longitude }) ? "heart.fill" : "heart")
+                        Image(systemName: "heart.fill")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .fontWeight(.semibold)
@@ -85,11 +83,6 @@ struct ForecastView: View {
                 }
             }
             .toolbarBackground(.clear, for: .navigationBar)
-        }
-        .task {
-            forecastViewModel.fetchCurrentWeather()
-            forecastViewModel.get5DayForecast()
-            forecastViewModel.getFavorites()
         }
     }
 }

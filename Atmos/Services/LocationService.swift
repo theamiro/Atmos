@@ -7,31 +7,48 @@
 
 import Combine
 import Foundation
+import CoreLocation
 
-protocol LocationServiceDelegate: AnyObject {
-    func getGeoCodePlaceName(location: any AnyLocation) -> AnyPublisher<[GeoCodeAddress], Error>
+protocol LocationServiceDelegate: CLLocationManagerDelegate {
+    var currentLocation: CurrentValueSubject<CLLocationCoordinate2D?, Error> { get }
+    func requestForInUseAuthorization()
 }
 
-final class LocationService: LocationServiceDelegate {
-    private let baseURL = "https://maps.googleapis.com"
-    private var token = Bundle.main.infoDictionary?["GOOGLE_MAPS_API_KEY"] as? String ?? "Unknown"
+final class LocationService: NSObject, LocationServiceDelegate {
+    private let locationManager = CLLocationManager()
+    private var lastKnownLocation: CLLocationCoordinate2D?
 
-    private var networkClient: NetworkClientDelegate
+    var currentLocation = CurrentValueSubject<CLLocationCoordinate2D?, Error>(nil)
 
-    init(networkClient: NetworkClientDelegate = NetworkClient()) {
-        self.networkClient = networkClient
+    override init() {
+        super.init()
+        locationManager.delegate = self
     }
 
-    func getGeoCodePlaceName(location: any AnyLocation) -> AnyPublisher<[GeoCodeAddress], Error> {
-        let parameters: [String: Any] = [
-            "latlng": [location.latitude, location.longitude]
-        ]
-        let target = Target(
-            baseURL: baseURL,
-            path: "/maps/api/geocode/json",
-            authorizationType: .queryParameter(key: "key", value: token),
-            task: .queryParameters(parameters)
-        )
-        return networkClient.request(target).map(\GeoCodeResponse.results).eraseToAnyPublisher()
+    func requestForInUseAuthorization() {
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
     }
+
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        if manager.authorizationStatus == .authorizedWhenInUse ||
+            manager.authorizationStatus == .authorizedAlways {
+            manager.startUpdatingLocation()
+        }
+    }
+
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let location = locations.last else { return }
+        DispatchQueue.main.async { [weak self] in
+            self?.currentLocation.send(location.coordinate)
+        }
+    }
+}
+
+enum LocationError: LocalizedError {
+    case authStatusNotDetermined
+    case unknownAuthStatus
+    case restricted
+    case denied
+    case invalid
 }
