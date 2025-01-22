@@ -8,6 +8,7 @@
 import XCTest
 @testable import Atmos
 import Foundation
+import CoreLocation
 
 final class ForecastViewModelTests: XCTestCase {
     private var sut: ForecastViewModel!
@@ -25,7 +26,7 @@ final class ForecastViewModelTests: XCTestCase {
 
     func testGetCurrentWeather() {
         let expectation = expectation(description: "Await fetching of current weather")
-        sut.fetchCurrentWeather()
+        sut.fetchCurrentWeather(location: CLLocationCoordinate2D(latitude: 2.0003, longitude: -3.3994))
 
         let result = XCTWaiter.wait(for: [expectation], timeout: 0.1)
 
@@ -43,7 +44,7 @@ final class ForecastViewModelTests: XCTestCase {
 
     func testGet5DayForecast() {
         let expectation = expectation(description: "Await fetching of forecast")
-        sut.get5DayForecast()
+        sut.get5DayForecast(location: CLLocationCoordinate2D(latitude: 2.0003, longitude: -3.3994))
 
         let result = XCTWaiter.wait(for: [expectation], timeout: 0.1)
         if result == XCTWaiter.Result.timedOut {
@@ -53,34 +54,15 @@ final class ForecastViewModelTests: XCTestCase {
         }
     }
 
-    func testGetFavorites() {
-        sut = configureTests(with: [location])
-        sut.getFavorites()
-        XCTAssertEqual(sut.favorites.count, 1)
-    }
-
-    func testAddFavorite() {
-        XCTAssertTrue(sut.favorites.isEmpty)
-        sut.addFavorite(location: location)
-        guard let firstLocation = sut.favorites.first as? Location else {
-            XCTFail("Favorites should not be empty")
-            return
-        }
-        XCTAssertEqual(firstLocation, location)
-    }
-
-    func testRemoveFavorite() {
-        sut = configureTests(with: [location])
-
-        sut.removeFavorite(location)
-        XCTAssertEqual(sut.favorites.count, 0)
-    }
-
     private func configureTests(with favorites: [Location] = []) -> ForecastViewModel {
         let networkClient = NetworkClient(stubBehavior: .immediately)
         let weatherService = WeatherService(networkClient: networkClient)
-        let favoriteService = MockFavoriteService(with: favorites)
-
-        return ForecastViewModel(weatherService: weatherService, favoriteService: favoriteService)
+        let placesService = MockPlacesService()
+        let locationService = LocationService()
+        return ForecastViewModel(
+            weatherService: weatherService,
+            locationService: locationService,
+            placesService: placesService
+        )
     }
 }

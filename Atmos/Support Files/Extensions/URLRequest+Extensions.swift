@@ -28,18 +28,23 @@ extension URLRequest {
         case .queryParameters(let parameters):
             var queryItems = [URLQueryItem]()
             for (key, value) in parameters {
-                var stringValue: String?
-                switch value {
-                case let string as String:
-                    stringValue = string
-                case let number as NSNumber:
-                    stringValue = number.stringValue
-                case let bool as Bool:
-                    stringValue = bool ? "true" : "false"
-                default:
-                    break
+                if let array = value as? [NSNumber] {
+                    let value = array.map { $0.stringValue }.joined(separator: ",")
+                    queryItems.append(URLQueryItem(name: key, value: value))
+                } else {
+                    var stringValue: String?
+                    switch value {
+                    case let string as String:
+                        stringValue = string
+                    case let number as NSNumber:
+                        stringValue = number.stringValue
+                    case let bool as Bool:
+                        stringValue = bool ? "true" : "false"
+                    default:
+                        break
+                    }
+                    queryItems.append(URLQueryItem(name: key, value: stringValue))
                 }
-                queryItems.append(URLQueryItem(name: key, value: stringValue))
             }
             self.url?.append(queryItems: queryItems)
         case .plainRequest:
@@ -48,14 +53,11 @@ extension URLRequest {
     }
 
     mutating func configureAuthorization(using target: AnyTarget) {
-        guard let token = Bundle.main.infoDictionary?["API_KEY"] as? String else {
-            return
-        }
         switch target.authorizationType {
-        case .bearer:
+        case .bearer(let token):
             setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        case .queryParameter(let key):
-            let apiKeyQueryItem = URLQueryItem(name: key, value: token)
+        case .queryParameter(let key, let value):
+            let apiKeyQueryItem = URLQueryItem(name: key, value: value)
             url?.append(queryItems: [apiKeyQueryItem])
         default: break
         }

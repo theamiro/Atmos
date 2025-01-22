@@ -6,11 +6,12 @@
 //
 
 import Foundation
+import CoreLocation
 import Combine
 
 protocol WeatherServiceDelegate: AnyObject {
-    func getCurrentWeather() -> AnyPublisher<Forecast, Error>
-    func get5DayForecast() -> AnyPublisher<ForecastResponse, Error>
+    func getCurrentWeather(latitude: Double, longitude: Double) -> AnyPublisher<Forecast, Error>
+    func get5DayForecast(latitude: Double, longitude: Double) -> AnyPublisher<ForecastResponse, Error>
 }
 
 final class WeatherService: WeatherServiceDelegate {
@@ -21,10 +22,10 @@ final class WeatherService: WeatherServiceDelegate {
         self.networkClient = networkClient
     }
 
-    func getCurrentWeather() -> AnyPublisher<Forecast, Error> {
+    func getCurrentWeather(latitude: Double, longitude: Double) -> AnyPublisher<Forecast, Error> {
         let parameters: [String: Any] = [
-            "lat": -1.286389,
-            "lon": 36.817223,
+            "lat": latitude,
+            "lon": longitude,
             "units": "metric"
         ]
         let target = Target(
@@ -40,10 +41,10 @@ final class WeatherService: WeatherServiceDelegate {
             .eraseToAnyPublisher()
     }
 
-    func get5DayForecast() -> AnyPublisher<ForecastResponse, Error> {
+    func get5DayForecast(latitude: Double, longitude: Double) -> AnyPublisher<ForecastResponse, Error> {
         let parameters: [String: Any] = [
-            "lat": -1.286389,
-            "lon": 36.817223,
+            "lat": latitude,
+            "lon": longitude,
             "units": "metric"
         ]
         let target = Target(

@@ -16,7 +16,7 @@ protocol FavoriteServiceDelegate: AnyObject {
     func removeFavorite(_ location: any AnyLocation) -> Just<Bool>
 }
 
-final class CoreDataFavoriteService: FavoriteServiceDelegate {
+final class CoreDataFavoriteService: FavoriteServiceDelegate, ObservableObject {
     private let context: NSManagedObjectContext
 
     init(context: NSManagedObjectContext = PersistenceController.shared.container.viewContext) {
@@ -24,15 +24,50 @@ final class CoreDataFavoriteService: FavoriteServiceDelegate {
     }
 
     func getFavorites() -> Just<[any AnyLocation]> {
-        return Just([])
+        let request = NSFetchRequest<FavoriteLocation>(entityName: "FavoriteLocation")
+        do {
+            let favorites = try context.fetch(request)
+            return Just(favorites)
+        } catch {
+            print(error.localizedDescription)
+            return Just([])
+        }
     }
 
     func addFavorite(location: any AnyLocation) -> Just<Bool> {
-        return Just(save())
+        let request = NSFetchRequest<FavoriteLocation>(entityName: "FavoriteLocation")
+        do {
+            let favorites = try context.fetch(request)
+            guard favorites.first(where: { $0.latitude == location.latitude && $0.longitude == location.longitude }) == nil else {
+                return Just(false)
+            }
+            let favorite = FavoriteLocation(context: context)
+            favorite.id = UUID()
+            favorite.name = location.name
+            favorite.latitude = location.latitude
+            favorite.longitude = location.longitude
+            return Just(save())
+        } catch {
+            print(error.localizedDescription)
+            return Just(false)
+        }
     }
 
     func removeFavorite(_ location: any AnyLocation) -> Just<Bool> {
-        return Just(save())
+        let request = NSFetchRequest<FavoriteLocation>(entityName: "FavoriteLocation")
+        do {
+            let favorites = try context.fetch(request)
+            print(favorites)
+            guard let favoriteLocation = favorites.first(where: { $0.latitude == location.latitude && $0.longitude == location.longitude }) else {
+                print("Location: \(location.latitude), \(location.longitude) not found in storage")
+                return Just(false)
+            }
+            context.delete(favoriteLocation)
+            return Just(save())
+        } catch {
+            print(error.localizedDescription)
+            return Just(false)
+        }
     }
 
     private func save() -> Bool {
