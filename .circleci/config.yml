@@ -21,10 +21,10 @@ jobs:
                   command: Swiftlint
             - run:
                   name: Build Validation
-                  command: xcodebuild build CODE_SIGNING_ALLOWED=NO
+                  command: xcodebuild -scheme Atmos CODE_SIGNING_ALLOWED=NO build
             - run:
                   name: Run Tests
-                  command: xcodebuild test -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 16 Pro' CODE_SIGNING_ALLOWED=NO
+                  command: xcodebuild -scheme Atmos -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 16 Pro' CODE_SIGNING_ALLOWED=NO test
 workflows:
     build-and-test-validation:
         jobs:
