@@ -57,12 +57,10 @@ final class ForecastViewModelTests: XCTestCase {
     private func configureTests(with favorites: [Location] = []) -> ForecastViewModel {
         let networkClient = NetworkClient(stubBehavior: .immediately)
         let weatherService = WeatherService(networkClient: networkClient)
-        let placesService = MockPlacesService()
         let locationService = LocationService()
         return ForecastViewModel(
             weatherService: weatherService,
-            locationService: locationService,
-            placesService: placesService
+            locationService: locationService
         )
     }
 }
