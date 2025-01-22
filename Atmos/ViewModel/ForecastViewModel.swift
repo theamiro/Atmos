@@ -17,14 +17,11 @@ final class ForecastViewModel: ObservableObject {
 
     private let weatherService: WeatherServiceDelegate
     private let locationService: LocationServiceDelegate
-    private let placesService: PlacesServiceDelegate
 
     init(weatherService: WeatherServiceDelegate,
-         locationService: LocationServiceDelegate,
-         placesService: PlacesServiceDelegate) {
+         locationService: LocationServiceDelegate) {
         self.weatherService = weatherService
         self.locationService = locationService
-        self.placesService = placesService
 
         observeForLocationUpdates()
     }
@@ -33,7 +30,6 @@ final class ForecastViewModel: ObservableObject {
         locationService
             .currentLocation
             .compactMap { $0 }
-            .debounce(for: .seconds(2), scheduler: DispatchQueue.main)
             .removeDuplicates(by: {
                 $0.isSignificantlyDifferent(from: $1)
             })
@@ -77,10 +73,6 @@ final class ForecastViewModel: ObservableObject {
                 self.forecast = self.filterForecastByDay(response.forecast)
             }
             .store(in: &cancellable)
-    }
-
-    func requestForInUseAuthorization() {
-        locationService.requestForInUseAuthorization()
     }
 
     private func filterForecastByDay(_ forecast: [Forecast]) -> [Forecast] {

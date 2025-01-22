@@ -12,6 +12,6 @@ extension CLLocationCoordinate2D {
         let currentLocation = CLLocation(latitude: self.latitude, longitude: self.longitude)
         let otherLocation = CLLocation(latitude: location.latitude, longitude: location.longitude)
         let distance = currentLocation.distance(from: otherLocation)
-        return distance > radius
+        return distance < radius
     }
 }

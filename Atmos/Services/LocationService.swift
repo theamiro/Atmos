@@ -11,7 +11,6 @@ import CoreLocation
 
 protocol LocationServiceDelegate: CLLocationManagerDelegate {
     var currentLocation: CurrentValueSubject<CLLocationCoordinate2D?, Error> { get }
-    func requestForInUseAuthorization()
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation])
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager)
 }
@@ -24,9 +23,10 @@ final class LocationService: NSObject, LocationServiceDelegate {
     override init() {
         super.init()
         locationManager.delegate = self
+        requestForInUseAuthorization()
     }
 
-    func requestForInUseAuthorization() {
+    private func requestForInUseAuthorization() {
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
     }

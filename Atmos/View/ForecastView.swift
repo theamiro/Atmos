@@ -10,9 +10,7 @@ import CoreData
 
 struct ForecastView: View {
     @StateObject private var forecastViewModel = ForecastViewModel(
-        weatherService: WeatherService(),
-        locationService: LocationService(),
-        placesService: GooglePlacesService())
+        weatherService: WeatherService(), locationService: LocationService())
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -58,13 +56,16 @@ struct ForecastView: View {
                     NavigationLink {
                         FavoritesView()
                     } label: {
-                        Image(systemName: "bookmark.fill")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .fontWeight(.semibold)
-                            .frame(width: 16)
-                            .foregroundStyle(Color.white)
-                            .padding(.horizontal, 16)
+                        VStack {
+                            Image(systemName: "star.fill")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .fontWeight(.semibold)
+                                .frame(width: 16)
+                            Text("Favorites")
+                                .font(.caption)
+                        }
+                        .foregroundStyle(Color.white)
                     }
                 }
             }

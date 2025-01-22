@@ -30,6 +30,7 @@ class FavoritesViewModel: ObservableObject {
                 self?.searchPlacesByText(text: query)
             }
             .store(in: &cancellable)
+        getFavorites()
     }
 
     func getFavorites() {
