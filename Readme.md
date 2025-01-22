@@ -15,6 +15,8 @@ cat develop.xcconfig.example > develop.xcconfig
 Build the project using `cmd+B` (⌘B)
 Select the run destination. Run the project using `cmd+R` (⌘R)
 
+The app will not work correctly unless the Open Weather Map API Key and Google Maps API Key are provided in the `default.xcconfig` file
+
 ## Third-party Libraries
 
 All third party libraries are implemented in Swift Package Manager (SPM). Opening the project in Xcode will automatically resolve package dependencies. In case of failure, on Xcode go to `File > Packages > Resolve Package Versions` or via the command line using `xcodebuild -resolvePackageDependencies`
