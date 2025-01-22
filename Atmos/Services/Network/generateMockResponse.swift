@@ -14,10 +14,10 @@ func generateMockResponse(_ resource: String, `extension`: String = "json") -> D
             data = try Data(contentsOf: url, options: .mappedIfSafe)
         } catch {
             data = Data()
-            print("Unable to retrieve contents of url: \(url.absoluteString)")
+            log.error("Unable to retrieve contents of url: \(url.absoluteString)")
         }
     } else {
-        print("Invalid URL")
+        log.error("Invalid URL")
         data = Data()
     }
     return data

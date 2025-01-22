@@ -29,7 +29,7 @@ final class CoreDataFavoriteService: FavoriteServiceDelegate, ObservableObject {
             let favorites = try context.fetch(request)
             return Just(favorites)
         } catch {
-            print(error.localizedDescription)
+            log.error("\(error.localizedDescription)")
             return Just([])
         }
     }
@@ -48,7 +48,7 @@ final class CoreDataFavoriteService: FavoriteServiceDelegate, ObservableObject {
             favorite.longitude = location.longitude
             return Just(save())
         } catch {
-            print(error.localizedDescription)
+            log.error("\(error.localizedDescription)")
             return Just(false)
         }
     }
@@ -57,15 +57,14 @@ final class CoreDataFavoriteService: FavoriteServiceDelegate, ObservableObject {
         let request = NSFetchRequest<FavoriteLocation>(entityName: "FavoriteLocation")
         do {
             let favorites = try context.fetch(request)
-            print(favorites)
             guard let favoriteLocation = favorites.first(where: { $0.latitude == location.latitude && $0.longitude == location.longitude }) else {
-                print("Location: \(location.latitude), \(location.longitude) not found in storage")
+                log.error("Location: \(location.latitude), \(location.longitude) not found in storage")
                 return Just(false)
             }
             context.delete(favoriteLocation)
             return Just(save())
         } catch {
-            print(error.localizedDescription)
+            log.error("\(error.localizedDescription)")
             return Just(false)
         }
     }
@@ -75,7 +74,7 @@ final class CoreDataFavoriteService: FavoriteServiceDelegate, ObservableObject {
             try context.save()
             return true
         } catch {
-            print("Unable to save context: \(error.localizedDescription)")
+            log.error("Unable to save context: \(error.localizedDescription)")
         }
         return false
     }

@@ -17,7 +17,6 @@ class ResponseHandler: ResponseHandlerDelegate {
         do {
             let decoder = JSONDecoder()
             let response = try decoder.decode(T.self, from: data)
-            print(String(describing: response))
             return Just(response)
                 .setFailureType(to: Error.self)
                 .eraseToAnyPublisher()
@@ -25,20 +24,31 @@ class ResponseHandler: ResponseHandlerDelegate {
             if let decodingError = error as? DecodingError {
                 switch decodingError {
                 case .typeMismatch(_, let context):
-                    print("Type Mismatch: ", context.codingPath, context.debugDescription)
+                    log.error("Type Mismatch", metadata: [
+                        "context": "\(context.codingPath)",
+                        "debugDescription": "\(context.debugDescription)"
+                    ])
                 case .valueNotFound(_, let context):
-                    print("Value not found: ", String(describing: context.underlyingError?.localizedDescription))
+                    log.error("Value not found", metadata: [
+                        "underlyingError": "\(String(describing: context.underlyingError?.localizedDescription))"
+                    ])
                 case .keyNotFound(let codingKey, let context):
-                    print("Key not Found for codingKey: \(codingKey.stringValue)",
-                          String(describing: context.underlyingError?.localizedDescription))
+                    log.error("Key not Found for codingKey", metadata: [
+                        "codingKey": "\(codingKey.stringValue)",
+                        "underlyingError": "\(String(describing: context.underlyingError?.localizedDescription))"
+                    ])
                 case .dataCorrupted(let context):
-                    print("Data corrupted error: ", String(describing: context.underlyingError?.localizedDescription))
+                    log.error("Data corrupted error", metadata: [
+                        "underlyingError": "\(String(describing: context.underlyingError?.localizedDescription))"
+                    ])
                 @unknown default:
-                    print("Unknown decoding error: ", error.localizedDescription)
+                    log.error("Unknown decoding error", metadata: [
+                        "underlyingError": "\(error.localizedDescription)"
+                    ])
                 }
                 return Fail(error: decodingError).eraseToAnyPublisher()
             } else {
-                print(error.localizedDescription)
+            log.error("\(error.localizedDescription)")
                 return Fail(error: error)
                     .eraseToAnyPublisher()
             }

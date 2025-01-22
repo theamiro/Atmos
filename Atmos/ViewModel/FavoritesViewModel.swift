@@ -10,8 +10,8 @@ import Combine
 
 class FavoritesViewModel: ObservableObject {
     @Published var searchTerm: String = ""
-    @Published var searchResults: [Place] = []
-    @Published var favorites: [any AnyLocation] = []
+    @Published private(set) var searchResults: [Place] = []
+    @Published private(set) var favorites: [any AnyLocation] = []
 
     private let favoriteService: FavoriteServiceDelegate
     private let placesService: PlacesServiceDelegate
@@ -26,7 +26,8 @@ class FavoritesViewModel: ObservableObject {
             .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
             .removeDuplicates()
             .filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
-            .sink { [weak self] query in
+            .receive(on: DispatchQueue.main)
+            .handleOutput { [weak self] query in
                 self?.searchPlacesByText(text: query)
             }
             .store(in: &cancellable)
@@ -36,20 +37,16 @@ class FavoritesViewModel: ObservableObject {
     func getFavorites() {
         favoriteService.getFavorites()
             .receive(on: DispatchQueue.main)
-            .sink { completed in
-                print(completed)
-            } receiveValue: { [weak self] (response: [any AnyLocation]) in
-                self?.favorites = response
-            }
+            .handleOutput(completion: { [weak self] favorites in
+                self?.favorites = favorites
+            })
             .store(in: &cancellable)
     }
 
     func addFavorite(_ location: Location) {
         favoriteService.addFavorite(location: location)
-            .sink { completed in
-                print(completed)
-            } receiveValue: { [weak self] success in
-                print(success)
+            .receive(on: DispatchQueue.main)
+            .handleOutput { [weak self] _ in
                 self?.resetSearch()
                 self?.getFavorites()
             }
@@ -58,21 +55,16 @@ class FavoritesViewModel: ObservableObject {
 
     func deleteFavorite<T>(_ location: T) where T: AnyLocation {
         favoriteService.removeFavorite(location)
-            .sink { completed in
-                print(completed)
-            } receiveValue: { [weak self] completed in
-                print(completed)
-                self?.getFavorites()
-            }
+            .receive(on: DispatchQueue.main)
+            .toVoid()
             .store(in: &cancellable)
     }
 
     func searchPlacesByText(text: String) {
         placesService
             .searchPlacesByText(text: text)
-            .sink { completed in
-                print(completed)
-            } receiveValue: { [weak self] places in
+            .receive(on: DispatchQueue.main)
+            .handleOutput { [weak self] places in
                 self?.searchResults = places
             }
             .store(in: &cancellable)

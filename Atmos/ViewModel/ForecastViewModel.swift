@@ -10,8 +10,8 @@ import Combine
 import CoreLocation
 
 final class ForecastViewModel: ObservableObject {
-    @Published var currentWeather: Forecast?
-    @Published var forecast: [Forecast] = []
+    @Published private(set) var currentWeather: Forecast?
+    @Published private(set) var forecast: [Forecast] = []
 
     private var cancellable = Set<AnyCancellable>()
 
@@ -33,12 +33,11 @@ final class ForecastViewModel: ObservableObject {
             .removeDuplicates(by: {
                 $0.isSignificantlyDifferent(from: $1)
             })
-            .sink(receiveCompletion: { completed in
-                print(completed)
-            }, receiveValue: { [weak self] location in
+            .receive(on: DispatchQueue.main)
+            .handleOutput { [weak self] location in
                 self?.fetchCurrentWeather(location: location)
                 self?.get5DayForecast(location: location)
-            })
+            }
             .store(in: &cancellable)
     }
 
@@ -46,13 +45,7 @@ final class ForecastViewModel: ObservableObject {
         weatherService
             .getCurrentWeather(latitude: location.latitude, longitude: location.longitude)
             .receive(on: DispatchQueue.main)
-            .sink { completed in
-                switch completed {
-                case .finished: break
-                case .failure(let error):
-                    print(error.localizedDescription)
-                }
-            } receiveValue: { [weak self] response in
+            .handleOutput { [weak self] response in
                 self?.currentWeather = response
             }
             .store(in: &cancellable)
@@ -62,13 +55,7 @@ final class ForecastViewModel: ObservableObject {
         weatherService
             .get5DayForecast(latitude: location.latitude, longitude: location.longitude)
             .receive(on: DispatchQueue.main)
-            .sink { completed in
-                switch completed {
-                case .finished: break
-                case .failure(let error):
-                    print(error.localizedDescription)
-                }
-            } receiveValue: { [weak self] response in
+            .handleOutput { [weak self] response in
                 guard let self else { return }
                 self.forecast = self.filterForecastByDay(response.forecast)
             }

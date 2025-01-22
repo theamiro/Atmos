@@ -34,6 +34,7 @@ struct ForecastView: View {
                         .background(forecastViewModel.currentWeather?.weather.first?.main.backgroundColor ??
                                     Color.cloudy)
                         .foregroundStyle(Color.white)
+                        .offset(y: -10)
                     Divider()
                         .frame(height: 1.6)
                         .background(Color.white)

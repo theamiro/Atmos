@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		84D613B72D40D1BD00C6E92D /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 84D613B62D40D1BD00C6E92D /* Logging */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		84278A202D396BF30021FFF4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84D613B72D40D1BD00C6E92D /* Logging in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -104,6 +109,7 @@
 			);
 			name = Atmos;
 			packageProductDependencies = (
+				84D613B62D40D1BD00C6E92D /* Logging */,
 			);
 			productName = Atmos;
 			productReference = 84278A0A2D396BF20021FFF4 /* Atmos.app */;
@@ -162,6 +168,9 @@
 			);
 			mainGroup = 84278A012D396BF20021FFF4;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				84D613B52D40D1BD00C6E92D /* XCRemoteSwiftPackageReference "swift-log" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 84278A0B2D396BF20021FFF4 /* Products */;
 			projectDirPath = "";
@@ -387,6 +396,25 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		84D613B52D40D1BD00C6E92D /* XCRemoteSwiftPackageReference "swift-log" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-log.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.6.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		84D613B62D40D1BD00C6E92D /* Logging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 84D613B52D40D1BD00C6E92D /* XCRemoteSwiftPackageReference "swift-log" */;
+			productName = Logging;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 84278A022D396BF20021FFF4 /* Project object */;
 }
