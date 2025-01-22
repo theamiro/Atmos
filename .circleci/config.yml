@@ -17,6 +17,7 @@ jobs:
                   name: Setup for builds
                   command: |
                       mkdir -p 'test-results'
+                      mkdir -p 'artifacts'
             - run:
                   name: Install Swiftlint
                   command: brew install Swiftlint
