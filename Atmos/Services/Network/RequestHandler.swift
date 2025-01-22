@@ -41,7 +41,18 @@ class RequestHandler: RequestHandlerDelegate {
 
         return session
             .dataTaskPublisher(for: request)
-            .map(\.data)
+            .map { (data: Data, response: URLResponse) in
+                guard let response = response as? HTTPURLResponse else {
+                    print("Invalid response")
+                    return data
+                }
+                guard (200...300).contains(response.statusCode) else {
+                    print("Invalid status code: \(response.statusCode)")
+                    return data
+                }
+                print(String(describing: String(data: data, encoding: .utf8)))
+                return data
+            }
             .mapError { $0 as Error }
             .eraseToAnyPublisher()
     }

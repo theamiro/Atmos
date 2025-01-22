@@ -12,20 +12,40 @@ import CoreLocation
 final class ForecastViewModel: ObservableObject {
     @Published var currentWeather: Forecast?
     @Published var forecast: [Forecast] = []
-    @Published var favorites: [any AnyLocation] = []
 
     private var cancellable = Set<AnyCancellable>()
 
-    private var weatherService: WeatherServiceDelegate
-    private var favoriteService: FavoriteServiceDelegate
+    private let weatherService: WeatherServiceDelegate
+    private let locationService: LocationServiceDelegate
 
-    init(weatherService: WeatherServiceDelegate, favoriteService: FavoriteServiceDelegate) {
+    init(weatherService: WeatherServiceDelegate,
+         locationService: LocationServiceDelegate) {
         self.weatherService = weatherService
-        self.favoriteService = favoriteService
+        self.locationService = locationService
+
+        observeForLocationUpdates()
     }
 
-    func fetchCurrentWeather() {
-        weatherService.getCurrentWeather()
+    private func observeForLocationUpdates() {
+        locationService
+            .currentLocation
+            .compactMap { $0 }
+            .removeDuplicates(by: {
+                $0.isSignificantlyDifferent(from: $1)
+            })
+            .sink(receiveCompletion: { completed in
+                print(completed)
+            }, receiveValue: { [weak self] location in
+                self?.fetchCurrentWeather(location: location)
+                self?.get5DayForecast(location: location)
+            })
+            .store(in: &cancellable)
+    }
+
+    func fetchCurrentWeather(location: CLLocationCoordinate2D) {
+        weatherService
+            .getCurrentWeather(latitude: location.latitude, longitude: location.longitude)
+            .receive(on: DispatchQueue.main)
             .sink { completed in
                 switch completed {
                 case .finished: break
@@ -38,8 +58,10 @@ final class ForecastViewModel: ObservableObject {
             .store(in: &cancellable)
     }
 
-    func get5DayForecast() {
-        weatherService.get5DayForecast()
+    func get5DayForecast(location: CLLocationCoordinate2D) {
+        weatherService
+            .get5DayForecast(latitude: location.latitude, longitude: location.longitude)
+            .receive(on: DispatchQueue.main)
             .sink { completed in
                 switch completed {
                 case .finished: break
@@ -49,46 +71,6 @@ final class ForecastViewModel: ObservableObject {
             } receiveValue: { [weak self] response in
                 guard let self else { return }
                 self.forecast = self.filterForecastByDay(response.forecast)
-            }
-            .store(in: &cancellable)
-    }
-
-    func getFavorites() {
-        favoriteService.getFavorites()
-            .sink(receiveCompletion: { completed in
-                switch completed {
-                case .finished: break
-                case .failure(let error):
-                    print(error.localizedDescription)
-                }
-            }, receiveValue: { [weak self] favorites in
-                self?.favorites = favorites
-            })
-            .store(in: &cancellable)
-    }
-
-    func addFavorite(location: Location) {
-        favoriteService.addFavorite(location: location)
-            .sink { [weak self] success in
-                if success {
-                    // notify success
-                    self?.getFavorites()
-                } else {
-                    // notify error
-                }
-            }
-            .store(in: &cancellable)
-    }
-
-    func removeFavorite(_ location: Location) {
-        favoriteService.removeFavorite(location)
-            .sink { [weak self] success in
-                if success {
-                    // notify success
-                    self?.getFavorites()
-                } else {
-                    // notify error
-                }
             }
             .store(in: &cancellable)
     }

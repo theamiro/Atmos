@@ -22,7 +22,7 @@ final class MockFavoriteService: FavoriteServiceDelegate {
         guard storage.first(where: { $0.latitude == location.latitude && $0.longitude == location.longitude }) == nil else {
             return Just(false)
         }
-        storage.append(Location(longitude: location.longitude, latitude: location.latitude))
+        storage.append(Location(name: location.name, longitude: location.longitude, latitude: location.latitude))
         return Just(true)
     }
 

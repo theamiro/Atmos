@@ -8,7 +8,7 @@
 import Foundation
 
 enum AuthorizationType {
-    case bearer
-    case queryParameter(key: String)
+    case bearer(token: String)
+    case queryParameter(key: String, value: String = Bundle.main.infoDictionary?["API_KEY"] as? String ?? "Unknown")
     case none
 }

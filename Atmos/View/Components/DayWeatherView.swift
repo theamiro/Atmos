@@ -30,7 +30,6 @@ struct DayWeatherView: View {
         .foregroundStyle(Color.white)
         .padding(.horizontal)
         .padding(.vertical, 8)
-        .background(forecast.weather.first?.main.backgroundColor)
     }
 }
 
