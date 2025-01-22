@@ -14,6 +14,10 @@ jobs:
                       echo "API_KEY = $API_KEY" >> $CONFIG_DIR;
                       echo "GOOGLE_MAPS_API_KEY = $GOOGLE_MAPS_API_KEY" >> $CONFIG_DIR;
             - run:
+                  name: Setup for builds
+                  command: |
+                      mkdir -p 'test-results'
+            - run:
                   name: Install Swiftlint
                   command: brew install Swiftlint
             - run:
