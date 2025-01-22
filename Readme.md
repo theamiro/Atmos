@@ -1,6 +1,6 @@
 # Atmos Weather app in Swift
 
-![Settings Window](https://raw.github.com/theamiro/Atmos/master/screenshot.png)
+![App Screenshots](screenshot.png)
 
 ## Setup and Run
 
