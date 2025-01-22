@@ -13,10 +13,10 @@ jobs:
                   command: Swiftlint
             - run:
                   name: Build Validation
-                  command: xcodebuild -scheme debug build CODE_SIGNING_ALLOWED=NO
+                  command: xcodebuild -scheme Debug build CODE_SIGNING_ALLOWED=NO
             - run:
                   name: Run Tests
-                  command: xcodebuild test -scheme debug -sdk iphonesimulator -destination="iOS Simulator,name=iPhone 16 Pro"
+                  command: xcodebuild test -scheme Debug -sdk iphonesimulator -destination="iOS Simulator,name=iPhone 16 Pro"
 workflows:
     build-and-test-validation:
         jobs:
