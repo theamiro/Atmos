@@ -31,7 +31,6 @@ struct FavoritesMapView: View {
             }
             .ignoresSafeArea()
             .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-            .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
         }
     }
 }
