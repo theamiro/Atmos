@@ -1,5 +1,7 @@
 # Atmos Weather app in Swift
 
+![Settings Window](https://raw.github.com/theamiro/Atmos/master/screenshot.png)
+
 ## Setup and Run
 
 Copy and paste code from `develop.xcconfig.example` to a new `develop.xcconfig` file and add in the Weather API Key as needed.
@@ -29,9 +31,12 @@ Model View ViewModel (MVVM) with implementations being done in SwiftUI
 
 Baked into the current app version is Localization using `Localizable.xcstrings` for English, French and Afrikaans. _*A disclaimer is that the translations were retrieved from Google Translate and may vary slightly in meaning based on the context and/or gender for French*_
 
+#### CoreLocation
+The app is limited to only fetch weather and apply it over a 5 km radius.
+
 #### Code Coverage
 
-At the time of submission of this project, code coverage sat at 45% coverage.
+At the time of submission of this project, code coverage sat at 52% coverage.
 
 ## Performing Tests
 
@@ -60,16 +65,20 @@ swiftlint --fix
 
 ## CI/CD
 
+##### CircleCI
+
+Initial implementation for CircleCI Pipelines.
+
 ##### Xcode Cloud
 
 For ease of integration, Xcode Cloud provides build validation and CI/CD including appstore review submission although it requires additional setup on Appstore Connect. It provides a simple and 'free' means of deployment.
 
 ## Improvements
 
-These are improvements I would make if I had more time to continuously improve the project.
+These are improvements I would make if I had more time to improve the project.
 
 1. Clean up Models around Location and CoreLocation
-2. Offline capability
+2. Offline capability and Caching
 3. Improve the UI to make it more intuitive and support better accessibility
 4. Improve code coverage to a minimum 80%
 5. Add support for `Fastlane` as an alternative to xcodeCloud, in a case where working with multiple teammates with varied access levels to appstoreconnect.
