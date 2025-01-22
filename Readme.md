@@ -32,6 +32,7 @@ Model View ViewModel (MVVM) with implementations being done in SwiftUI
 Baked into the current app version is Localization using `Localizable.xcstrings` for English, French and Afrikaans. _*A disclaimer is that the translations were retrieved from Google Translate and may vary slightly in meaning based on the context and/or gender for French*_
 
 #### CoreLocation
+
 The app is limited to only fetch weather and apply it over a 5 km radius.
 
 #### Code Coverage
@@ -78,7 +79,8 @@ For ease of integration, Xcode Cloud provides build validation and CI/CD includi
 These are improvements I would make if I had more time to improve the project.
 
 1. Clean up Models around Location and CoreLocation
-2. Offline capability and Caching
-3. Improve the UI to make it more intuitive and support better accessibility
-4. Improve code coverage to a minimum 80%
-5. Add support for `Fastlane` as an alternative to xcodeCloud, in a case where working with multiple teammates with varied access levels to appstoreconnect.
+2. Improve visual error handling
+3. Offline capability and Caching
+4. Improve the UI to make it more intuitive and support better accessibility
+5. Improve code coverage to a minimum 80%
+6. Add support for `Fastlane` as an alternative to xcodeCloud, in a case where working with multiple teammates with varied access levels to appstoreconnect.
