@@ -26,6 +26,7 @@ private final class OSLogHandler: LogHandler {
 
     private let osLog = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "app")
 
+    // swiftlint:disable:next
     func log(level: Logging.Logger.Level,
              message: Logging.Logger.Message,
              metadata: Logging.Logger.Metadata?,

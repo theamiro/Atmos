@@ -38,7 +38,8 @@ final class CoreDataFavoriteService: FavoriteServiceDelegate, ObservableObject {
         let request = NSFetchRequest<FavoriteLocation>(entityName: "FavoriteLocation")
         do {
             let favorites = try context.fetch(request)
-            guard favorites.first(where: { $0.latitude == location.latitude && $0.longitude == location.longitude }) == nil else {
+            guard favorites.first(where: { $0.latitude == location.latitude
+                && $0.longitude == location.longitude }) == nil else {
                 return Just(false)
             }
             let favorite = FavoriteLocation(context: context)
@@ -57,7 +58,8 @@ final class CoreDataFavoriteService: FavoriteServiceDelegate, ObservableObject {
         let request = NSFetchRequest<FavoriteLocation>(entityName: "FavoriteLocation")
         do {
             let favorites = try context.fetch(request)
-            guard let favoriteLocation = favorites.first(where: { $0.latitude == location.latitude && $0.longitude == location.longitude }) else {
+            guard let favoriteLocation = favorites.first(where: { $0.latitude == location.latitude
+                && $0.longitude == location.longitude }) else {
                 log.error("Location: \(location.latitude), \(location.longitude) not found in storage")
                 return Just(false)
             }
