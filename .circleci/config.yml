@@ -3,8 +3,16 @@ jobs:
     build-and-test:
         macos:
             xcode: "16.2.0"
+        environment:
+            CONFIG_DIR: atmos/Config/default.xcconfig
         steps:
             - checkout
+            - run:
+                  name: Add config files
+                  command: |
+                      touch $CONFIG_DIR;
+                      echo "API_KEY = $API_KEY" >> $CONFIG_DIR;
+                      echo "GOOGLE_MAPS_API_KEY = $GOOGLE_MAPS_API_KEY" >> $CONFIG_DIR;
             - run:
                   name: Install Swiftlint
                   command: brew install Swiftlint
