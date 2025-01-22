@@ -1,0 +1,23 @@
+version: 2.1
+jobs:
+    build-and-test:
+        macos:
+            xcode: "16.2.0"
+        steps:
+            - checkout
+            - run:
+                  name: Install Swiftlint
+                  command: brew install Swiftlint
+            - run:
+                  name: Run Swiftlint
+                  command: Swiftlint
+            - run:
+                  name: Build Validation
+                  command: xcodebuild -scheme debug build CODE_SIGNING_ALLOWED=NO
+            - run:
+                  name: Run Tests
+                  command: xcodebuild test -scheme debug -sdk iphonesimulator -destination="iOS Simulator,name=iPhone 16 Pro"
+workflows:
+    build-and-test-validation:
+        jobs:
+            - build-and-test
