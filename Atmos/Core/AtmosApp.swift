@@ -10,10 +10,9 @@ import SwiftUI
 @main
 struct AtmosApp: App {
     let persistenceController = PersistenceController.shared
-
     var body: some Scene {
         WindowGroup {
-            FavoritesView()
+            ForecastView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }

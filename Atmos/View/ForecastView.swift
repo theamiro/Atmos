@@ -11,7 +11,6 @@ import CoreData
 struct ForecastView: View {
     @StateObject private var forecastViewModel = ForecastViewModel(
         weatherService: WeatherService(),
-        favoriteService: CoreDataFavoriteService(),
         locationService: LocationService(),
         placesService: GooglePlacesService())
     var body: some View {
@@ -55,19 +54,6 @@ struct ForecastView: View {
             .scrollBounceBehavior(.basedOnSize)
             .ignoresSafeArea()
             .toolbar {
-                ToolbarItem(placement: .bottomBar) {
-                    Button {
-                        forecastViewModel.addFavorite()
-                    } label: {
-                        Image(systemName: "heart.fill")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .fontWeight(.semibold)
-                            .frame(width: 24)
-                            .foregroundStyle(Color.white)
-                            .padding(.horizontal, 16)
-                    }
-                }
                 ToolbarItem(placement: .bottomBar) {
                     NavigationLink {
                         FavoritesView()

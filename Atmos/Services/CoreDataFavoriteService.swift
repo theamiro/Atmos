@@ -16,7 +16,7 @@ protocol FavoriteServiceDelegate: AnyObject {
     func removeFavorite(_ location: any AnyLocation) -> Just<Bool>
 }
 
-final class CoreDataFavoriteService: FavoriteServiceDelegate {
+final class CoreDataFavoriteService: FavoriteServiceDelegate, ObservableObject {
     private let context: NSManagedObjectContext
 
     init(context: NSManagedObjectContext = PersistenceController.shared.container.viewContext) {

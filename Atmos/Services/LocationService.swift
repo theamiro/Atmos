@@ -12,11 +12,12 @@ import CoreLocation
 protocol LocationServiceDelegate: CLLocationManagerDelegate {
     var currentLocation: CurrentValueSubject<CLLocationCoordinate2D?, Error> { get }
     func requestForInUseAuthorization()
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation])
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager)
 }
 
 final class LocationService: NSObject, LocationServiceDelegate {
     private let locationManager = CLLocationManager()
-    private var lastKnownLocation: CLLocationCoordinate2D?
 
     var currentLocation = CurrentValueSubject<CLLocationCoordinate2D?, Error>(nil)
 

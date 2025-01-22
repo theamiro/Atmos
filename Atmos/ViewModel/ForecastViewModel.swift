@@ -12,21 +12,17 @@ import CoreLocation
 final class ForecastViewModel: ObservableObject {
     @Published var currentWeather: Forecast?
     @Published var forecast: [Forecast] = []
-    @Published var favorites: [any AnyLocation] = []
 
     private var cancellable = Set<AnyCancellable>()
 
     private let weatherService: WeatherServiceDelegate
-    private let favoriteService: FavoriteServiceDelegate
     private let locationService: LocationServiceDelegate
     private let placesService: PlacesServiceDelegate
 
     init(weatherService: WeatherServiceDelegate,
-         favoriteService: FavoriteServiceDelegate,
          locationService: LocationServiceDelegate,
          placesService: PlacesServiceDelegate) {
         self.weatherService = weatherService
-        self.favoriteService = favoriteService
         self.locationService = locationService
         self.placesService = placesService
 
@@ -37,7 +33,10 @@ final class ForecastViewModel: ObservableObject {
         locationService
             .currentLocation
             .compactMap { $0 }
-            .removeDuplicates(by: { $0.latitude == $1.latitude && $0.longitude == $1.longitude })
+            .debounce(for: .seconds(2), scheduler: DispatchQueue.main)
+            .removeDuplicates(by: {
+                $0.isSignificantlyDifferent(from: $1)
+            })
             .sink(receiveCompletion: { completed in
                 print(completed)
             }, receiveValue: { [weak self] location in
@@ -82,42 +81,6 @@ final class ForecastViewModel: ObservableObject {
 
     func requestForInUseAuthorization() {
         locationService.requestForInUseAuthorization()
-    }
-
-    func getFavorites() {
-        favoriteService
-            .getFavorites()
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { completed in
-                switch completed {
-                case .finished: break
-                case .failure(let error):
-                    print(error.localizedDescription)
-                }
-            }, receiveValue: { [weak self] favorites in
-                self?.favorites = favorites
-            })
-            .store(in: &cancellable)
-    }
-
-    func addFavorite() {
-        // Fetch Place Name
-        // Store in Coredata
-    }
-
-    func removeFavorite(_ location: Location) {
-        favoriteService
-            .removeFavorite(location)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] success in
-                if success {
-                    // notify success
-                    self?.getFavorites()
-                } else {
-                    // notify error
-                }
-            }
-            .store(in: &cancellable)
     }
 
     private func filterForecastByDay(_ forecast: [Forecast]) -> [Forecast] {
