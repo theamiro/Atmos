@@ -10,7 +10,7 @@ import Combine
 final class MockFavoriteService: FavoriteServiceDelegate {
     private var storage: [Location]
 
-    init(with favorites: [Location] = [Location]()) {
+    init(with favorites: [Location] = []) {
         self.storage = favorites
     }
 
@@ -35,7 +35,7 @@ final class MockFavoriteService: FavoriteServiceDelegate {
             $0.longitude == location.longitude }) else {
             return Just(false)
         }
-        storage.removeAll(where: { $0.id == favorite.id })
+        storage = storage.filter({ $0.id != favorite.id })
         return Just(true)
     }
 }
