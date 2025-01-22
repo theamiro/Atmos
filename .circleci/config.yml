@@ -2,7 +2,7 @@ version: 2.1
 jobs:
     build-and-test:
         macos:
-            xcode: "16.2.0"
+            xcode: 16.2.0
         environment:
             CONFIG_DIR: atmos/Config/default.xcconfig
         steps:
@@ -24,7 +24,7 @@ jobs:
                   command: xcodebuild build CODE_SIGNING_ALLOWED=NO
             - run:
                   name: Run Tests
-                  command: xcodebuild test -sdk iphonesimulator -destination="iOS Simulator,name=iPhone 16 Pro"
+                  command: xcodebuild test -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 16 Pro' CODE_SIGNING_ALLOWED=NO
 workflows:
     build-and-test-validation:
         jobs:
