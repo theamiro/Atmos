@@ -4,7 +4,7 @@ jobs:
         macos:
             xcode: 16.2.0
         environment:
-            CONFIG_DIR: atmos/Config/default.xcconfig
+            CONFIG_DIR: Atmos/Config/default.xcconfig
         steps:
             - checkout
             - run:
@@ -14,17 +14,25 @@ jobs:
                       echo "API_KEY = $API_KEY" >> $CONFIG_DIR;
                       echo "GOOGLE_MAPS_API_KEY = $GOOGLE_MAPS_API_KEY" >> $CONFIG_DIR;
             - run:
+                  name: Setup for builds
+                  command: |
+                      mkdir -p 'test-results'
+                      mkdir -p 'artifacts'
+            - run:
                   name: Install Swiftlint
                   command: brew install Swiftlint
             - run:
                   name: Run Swiftlint
                   command: Swiftlint
             - run:
+                  name: Resolve Package Dependencies
+                  command: xcodebuild -resolvePackageDependencies
+            - run:
                   name: Build Validation
-                  command: xcodebuild -scheme Atmos CODE_SIGNING_ALLOWED=NO build
+                  command: xcodebuild -scheme Atmos build CODE_SIGNING_ALLOWED=NO
             - run:
                   name: Run Tests
-                  command: xcodebuild -scheme Atmos -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 16 Pro' CODE_SIGNING_ALLOWED=NO test
+                  command: xcodebuild test -scheme Atmos -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 16 Pro' CODE_SIGNING_ALLOWED=NO
 workflows:
     build-and-test-validation:
         jobs:
